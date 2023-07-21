@@ -1,37 +1,39 @@
 import time
 import curses
 import asyncio
-import random 
+import random
 
 TIC_TIMEOUT = 0.1
 
 
 async def blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
     canvas.addstr(row, column, symbol, curses.A_DIM)
-    await asyncio.sleep(0)
-    for num in range(20):
+    for num in range(random.randint(0, 2), 2):
+        asyncio.sleep(0)
         await asyncio.sleep(0)
+        for num in range(20):
+            await asyncio.sleep(0)
 
-    canvas.addstr(row, column, symbol)
-    await asyncio.sleep(0)
-    for num in range(3):
+        canvas.addstr(row, column, symbol)
         await asyncio.sleep(0)
+        for num in range(3):
+            await asyncio.sleep(0)
 
-    canvas.addstr(row, column, symbol, curses.A_BOLD)
-    await asyncio.sleep(0)
-    for num in range(5):
+        canvas.addstr(row, column, symbol, curses.A_BOLD)
         await asyncio.sleep(0)
+        for num in range(5):
+            await asyncio.sleep(0)
 
-    canvas.addstr(row, column, symbol)
-    await asyncio.sleep(0)
-    for num in range(3):
+        canvas.addstr(row, column, symbol)
         await asyncio.sleep(0)
+        for num in range(3):
+            await asyncio.sleep(0)
 
 
 def get_coroutines(canvas):
     coroutines = []
 
-    for num in range(5):
+    for num in range(60):
         column = random.randint(1, 85)
         row = random.randint(1, 21)
         symbol = random.choice('+*.:')
