@@ -1,8 +1,9 @@
-SPACE_KEY_CODE = 32
-LEFT_KEY_CODE = 260
-RIGHT_KEY_CODE = 261
-UP_KEY_CODE = 259
-DOWN_KEY_CODE = 258
+class Buttons:
+    SPACE_KEY_CODE = 32
+    LEFT_KEY_CODE = 260
+    RIGHT_KEY_CODE = 261
+    UP_KEY_CODE = 259
+    DOWN_KEY_CODE = 258
 
 
 def read_controls(canvas):
@@ -14,23 +15,19 @@ def read_controls(canvas):
     while True:
         pressed_key_code = canvas.getch()
 
-        if pressed_key_code == -1:
-            break
-
-        if pressed_key_code == UP_KEY_CODE:
-            rows_direction = -1
-
-        if pressed_key_code == DOWN_KEY_CODE:
-            rows_direction = 1
-
-        if pressed_key_code == RIGHT_KEY_CODE:
-            columns_direction = 1
-
-        if pressed_key_code == LEFT_KEY_CODE:
-            columns_direction = -1
-
-        if pressed_key_code == SPACE_KEY_CODE:
-            space_pressed = True
+        match pressed_key_code:
+            case Buttons.UP_KEY_CODE:
+                rows_direction = -1
+            case Buttons.DOWN_KEY_CODE:
+                rows_direction = 1
+            case Buttons.RIGHT_KEY_CODE:
+                columns_direction = 1
+            case Buttons.LEFT_KEY_CODE:
+                columns_direction = -1
+            case Buttons.SPACE_KEY_CODE:
+                space_pressed = True
+            case _:
+                break
 
     return rows_direction, columns_direction, space_pressed
 

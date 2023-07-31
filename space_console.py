@@ -15,7 +15,7 @@ def get_rocet_frames(name_folder='rocket_frame'):
     file_names = os.listdir(name_folder)
 
     for file_name in file_names:
-        path = os.path.join(name_folder, file_name)  # Есил у вас не ubuntu, а другие os
+        path = os.path.join(name_folder, file_name)  # Если у вас не ubuntu, а другие os
 
         with open(path, "r") as file:
             rocet_frames.append(file.read())
@@ -89,6 +89,7 @@ def get_symbol_coroutines(canvas):  # TODO  Уточнить название
 
 def draw(canvas):
     canvas.border()
+    canvas.nodelay(True)
     start_row = 18
     start_column = 50
     symbol_coroutines = get_symbol_coroutines(canvas)
@@ -97,6 +98,9 @@ def draw(canvas):
     iterator_rocet_frames = cycle(rocet_frames)
 
     while True:
+        rows_direction, columns_direction, space_pressed = read_controls(canvas)
+        start_row += rows_direction
+        start_column += columns_direction
         rocet_frame = next(iterator_rocet_frames)
         draw_frame(canvas, start_row, start_column, rocet_frame)
         fire_coroutine.send(None)
