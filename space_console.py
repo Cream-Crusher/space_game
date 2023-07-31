@@ -55,6 +55,7 @@ async def symbol_blink(canvas, row, column, symbol):  # TODO наверное н
     canvas.addstr(row, column, symbol, curses.A_DIM)
     for num in range(random.randint(0, 10), 10):
 
+        canvas.addstr(row, column, symbol, curses.A_DIM)
         await asyncio.sleep(0)
         for num in range(num):
             await asyncio.sleep(0)
