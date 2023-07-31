@@ -65,6 +65,6 @@ def get_frame_size(text):
     """Calculate size of multiline text fragment, return pair — number of rows and colums."""
 
     lines = text.splitlines()
-    rows = len(lines)
-    columns = max([len(line) for line in lines])
-    return rows, columns
+    row_rocet = len(lines)
+    column_rocet = max([len(line) for line in lines])
+    return row_rocet, column_rocet

@@ -54,7 +54,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def symbol_blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
     canvas.addstr(row, column, symbol, curses.A_DIM)
-    for num in range(random.randint(0, 5), 5):
+    for num in range(random.randint(0, 10), 10):
 
         await asyncio.sleep(0)
         for num in range(num):
@@ -96,12 +96,17 @@ def draw(canvas):
     fire_coroutine = fire(canvas, start_row, start_column)
     rocet_frames = get_rocet_frames()
     iterator_rocet_frames = cycle(rocet_frames)
+    row, column = canvas.getmaxyx()
 
     while True:
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
-        start_row += rows_direction
-        start_column += columns_direction
         rocet_frame = next(iterator_rocet_frames)
+        row_rocet, column_rocet = get_frame_size(rocet_frame)  # В цикле т.к фрейм может быть не одинаковыми по размеру с предыдущим.
+
+        if start_row != row:
+            start_row += rows_direction
+            start_column += columns_direction
+
         draw_frame(canvas, start_row, start_column, rocet_frame)
         fire_coroutine.send(None)
 
