@@ -1,3 +1,4 @@
+import os
 import time
 import curses
 import asyncio
@@ -6,6 +7,19 @@ import random
 from curses_tools import read_controls, draw_frame, get_frame_size
 
 TIC_TIMEOUT = 0.1
+
+
+def get_rocet_frames(name_folder='rocket_frame'):
+    rocet_frames = []
+    file_names = os.listdir(name_folder)  # Для возможности добавить ещё много фреймов корабля
+
+    for file_name in file_names:
+        path = os.path.join(name_folder, file_name)  # Есил у вас не ubuntu, а другие os
+
+        with open(path, "r") as file:
+            rocet_frames.append(file.read())
+
+    return rocet_frames
 
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0.5):
@@ -95,6 +109,8 @@ def draw(canvas):
 
 
 if __name__ == '__main__':
-    curses.update_lines_cols()
-    curses.wrapper(draw)
-    curses.curs_set(False)
+    rocet_frames = get_rocet_frames()
+
+    # curses.update_lines_cols()
+    # curses.wrapper(draw)
+    # curses.curs_set(False)
