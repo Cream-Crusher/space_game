@@ -29,7 +29,6 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
     canvas.addstr(round(row), round(column), '*')
     await asyncio.sleep(0)
-
     canvas.addstr(round(row), round(column), 'O')
     await asyncio.sleep(0)
     canvas.addstr(round(row), round(column), ' ')
@@ -90,24 +89,28 @@ def get_symbol_coroutines(canvas):  # TODO  Уточнить название
 def draw(canvas):
     canvas.border()
     canvas.nodelay(True)
-    start_row = 18
-    start_column = 50
+    spawn_row = 18
+    spawn_column = 50
     symbol_coroutines = get_symbol_coroutines(canvas)
-    fire_coroutine = fire(canvas, start_row, start_column)
+    fire_coroutine = fire(canvas, spawn_row, spawn_column)
     rocet_frames = get_rocet_frames()
     iterator_rocet_frames = cycle(rocet_frames)
-    row, column = canvas.getmaxyx()
+    row_console, column_console = canvas.getmaxyx()
 
     while True:
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
         rocet_frame = next(iterator_rocet_frames)
         row_rocet, column_rocet = get_frame_size(rocet_frame)  # В цикле т.к фрейм может быть не одинаковыми по размеру с предыдущим.
 
-        if start_row != row:
-            start_row += rows_direction
-            start_column += columns_direction
+        spawn_row += rows_direction
+        if row_console <= spawn_row+row_rocet or 0+row_rocet >= spawn_row+row_rocet:
+            spawn_row -= rows_direction
 
-        draw_frame(canvas, start_row, start_column, rocet_frame)
+        spawn_column += columns_direction
+        if column_console <= spawn_column+column_rocet or 0+column_rocet >= spawn_column+column_rocet:
+            spawn_column -= columns_direction
+
+        draw_frame(canvas, spawn_row, spawn_column, rocet_frame)
         fire_coroutine.send(None)
 
         for coroutine in symbol_coroutines:
@@ -118,7 +121,7 @@ def draw(canvas):
 
             canvas.refresh()
 
-        draw_frame(canvas, start_row, start_column, rocet_frame, negative=True)
+        draw_frame(canvas, spawn_row, spawn_column, rocet_frame, negative=True)
         time.sleep(TICk_TIMEOUT)
         if len(symbol_coroutines) == 0:
             break
