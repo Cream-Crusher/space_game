@@ -60,7 +60,7 @@ async def symbol_blink(canvas, row, column, symbol):  # TODO наверное н
             await asyncio.sleep(0)
 
 
-def get_coroutines(canvas):  # TODO  Уточнить название
+def get_symbol_coroutines(canvas):  # TODO  Уточнить название
     symbol_coroutines = []
 
     for num in range(30):
@@ -73,7 +73,7 @@ def get_coroutines(canvas):  # TODO  Уточнить название
 
 def draw(canvas):
     canvas.border()
-    symbol_coroutines = get_coroutines(canvas)
+    symbol_coroutines = get_symbol_coroutines(canvas)
     start_row = 10
     start_column = 10
     fire_coroutine = fire(canvas, start_row, start_column)
