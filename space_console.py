@@ -3,6 +3,8 @@ import curses
 import asyncio
 import random
 
+from curses_tools import read_controls, draw_frame, get_frame_size
+
 TIC_TIMEOUT = 0.1
 
 
