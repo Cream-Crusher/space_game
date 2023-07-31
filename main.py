@@ -6,7 +6,37 @@ import random
 TIC_TIMEOUT = 0.1
 
 
-async def blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
+async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0.5):
+    """Display animation of gun shot, direction and speed can be specified."""
+
+    row, column = start_row, start_column
+
+    canvas.addstr(round(row), round(column), '*')
+    await asyncio.sleep(0)
+
+    canvas.addstr(round(row), round(column), 'O')
+    await asyncio.sleep(0)
+    canvas.addstr(round(row), round(column), ' ')
+
+    row += rows_speed
+    column += columns_speed
+
+    symbol = '-' if columns_speed else '|'
+
+    rows, columns = canvas.getmaxyx()
+    max_row, max_column = rows - 1, columns - 1
+
+    curses.beep()
+
+    while 0 < row < max_row and 0 < column < max_column:
+        canvas.addstr(round(row), round(column), symbol)
+        await asyncio.sleep(0)
+        canvas.addstr(round(row), round(column), ' ')
+        row += rows_speed
+        column += columns_speed
+
+
+async def symbol_blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
     canvas.addstr(row, column, symbol, curses.A_DIM)
     for num in range(random.randint(0, 10), 10):
 
@@ -30,31 +60,35 @@ async def blink(canvas, row, column, symbol):  # TODO наверное нужн�
             await asyncio.sleep(0)
 
 
-def get_coroutines(canvas):
-    coroutines = []
+def get_coroutines(canvas):  # TODO  Уточнить название
+    symbol_coroutines = []
 
-    for num in range(80):
+    for num in range(30):
         column = random.randint(1, 80)
         row = random.randint(1, 21)
         symbol = random.choice('+*.:')
-        coroutines.append(blink(canvas, row, column, symbol))
-    return coroutines
+        symbol_coroutines.append(symbol_blink(canvas, row, column, symbol))
+    return symbol_coroutines
 
 
 def draw(canvas):
     canvas.border()
-    coroutines = get_coroutines(canvas)
+    symbol_coroutines = get_coroutines(canvas)
+    start_row = 10
+    start_column = 10
+    fire_coroutine = fire(canvas, start_row, start_column)
 
     while True:
-
-        for coroutine in coroutines:
+        for coroutine in symbol_coroutines:
             try:
                 coroutine.send(None)
-                canvas.refresh()
             except StopIteration:
-                coroutines.remove(coroutine)
+                fire_coroutine.send(None)
+                symbol_coroutines.remove(coroutine)
+
+            canvas.refresh()
         time.sleep(TIC_TIMEOUT)
-        if len(coroutines) == 0:
+        if len(symbol_coroutines) == 0:
             break
 
 
