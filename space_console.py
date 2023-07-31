@@ -4,14 +4,15 @@ import curses
 import asyncio
 import random
 
+from itertools import cycle
 from curses_tools import read_controls, draw_frame, get_frame_size
 
-TIC_TIMEOUT = 0.1
+TICk_TIMEOUT = 0.1
 
 
 def get_rocet_frames(name_folder='rocket_frame'):
     rocet_frames = []
-    file_names = os.listdir(name_folder)  # Для возможности добавить ещё много фреймов корабля
+    file_names = os.listdir(name_folder)
 
     for file_name in file_names:
         path = os.path.join(name_folder, file_name)  # Есил у вас не ubuntu, а другие os
@@ -24,7 +25,6 @@ def get_rocet_frames(name_folder='rocket_frame'):
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0.5):
     """Display animation of gun shot, direction and speed can be specified."""
-
     row, column = start_row, start_column
 
     canvas.addstr(round(row), round(column), '*')
@@ -54,7 +54,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def symbol_blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
     canvas.addstr(row, column, symbol, curses.A_DIM)
-    for num in range(random.randint(0, 10), 10):
+    for num in range(random.randint(0, 5), 5):
 
         await asyncio.sleep(0)
         for num in range(num):
@@ -89,28 +89,33 @@ def get_symbol_coroutines(canvas):  # TODO  Уточнить название
 
 def draw(canvas):
     canvas.border()
+    start_row = 18
+    start_column = 50
     symbol_coroutines = get_symbol_coroutines(canvas)
-    start_row = 10
-    start_column = 10
     fire_coroutine = fire(canvas, start_row, start_column)
+    rocet_frames = get_rocet_frames()
+    iterator_rocet_frames = cycle(rocet_frames)
 
     while True:
+        rocet_frame = next(iterator_rocet_frames)
+        draw_frame(canvas, start_row, start_column, rocet_frame)
+        fire_coroutine.send(None)
+
         for coroutine in symbol_coroutines:
             try:
                 coroutine.send(None)
             except StopIteration:
-                fire_coroutine.send(None)
                 symbol_coroutines.remove(coroutine)
 
             canvas.refresh()
-        time.sleep(TIC_TIMEOUT)
+
+        draw_frame(canvas, start_row, start_column, rocet_frame, negative=True)
+        time.sleep(TICk_TIMEOUT)
         if len(symbol_coroutines) == 0:
             break
 
 
 if __name__ == '__main__':
-    rocet_frames = get_rocet_frames()
-
-    # curses.update_lines_cols()
-    # curses.wrapper(draw)
-    # curses.curs_set(False)
+    curses.update_lines_cols()
+    curses.wrapper(draw)
+    curses.curs_set(False)
