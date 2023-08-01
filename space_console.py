@@ -46,7 +46,6 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         await asyncio.sleep(0)
         canvas.addstr(round(row), round(column), ' ')
         row += rows_speed
-        column += columns_speed
 
 
 async def asyncio_sleep_for_canvas(num):
@@ -58,7 +57,7 @@ async def asyncio_sleep_for_canvas(num):
 async def symbol_blink(canvas, row, column, symbol):
     canvas.addstr(row, column, symbol, curses.A_DIM)
 
-    for num in range(random.randint(0, 10), 10):
+    for num in range(random.randint(0, 5), 5):
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
         await asyncio.sleep(0)
