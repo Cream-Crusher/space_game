@@ -1,8 +1,8 @@
 import os
 import time
 import curses
-import asyncio
 import random
+import asyncio
 
 from itertools import cycle
 from curses_tools import read_controls, draw_frame, get_frame_size
@@ -15,7 +15,7 @@ def get_rocet_frames(name_folder='rocket_frame'):
     file_names = os.listdir(name_folder)
 
     for file_name in file_names:
-        path = os.path.join(name_folder, file_name)  # Если у вас не ubuntu, а другие os
+        path = os.path.join(name_folder, file_name)
 
         with open(path, "r") as file:
             rocet_frames.append(file.read())
@@ -35,9 +35,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
     row += rows_speed
     column += columns_speed
-
     symbol = '-' if columns_speed else '|'
-
     rows, columns = canvas.getmaxyx()
     max_row, max_column = rows - 1, columns - 1
 
@@ -51,8 +49,15 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def symbol_blink(canvas, row, column, symbol):  # TODO наверное нужно  убрать копипасть, кхкх.
+async def asyncio_sleep_for_canvas(num):
+    await asyncio.sleep(0)
+    for num in range(num):
+        await asyncio.sleep(0)
+
+
+async def symbol_blink(canvas, row, column, symbol):
     canvas.addstr(row, column, symbol, curses.A_DIM)
+
     for num in range(random.randint(0, 10), 10):
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
@@ -76,7 +81,7 @@ async def symbol_blink(canvas, row, column, symbol):  # TODO наверное н
             await asyncio.sleep(0)
 
 
-def get_symbol_coroutines(canvas):  # TODO  Уточнить название
+def get_symbol_coroutines(canvas):
     symbol_coroutines = []
 
     for num in range(30):
@@ -84,14 +89,32 @@ def get_symbol_coroutines(canvas):  # TODO  Уточнить название
         row = random.randint(1, 21)
         symbol = random.choice('+*.:')
         symbol_coroutines.append(symbol_blink(canvas, row, column, symbol))
+
     return symbol_coroutines
+
+
+def rocket_spawn_coordinates(
+        spawn_row, spawn_column,
+        rows_direction, columns_direction,
+        row_rocet, column_rocet,
+        row_console, column_console):
+
+    spawn_row += rows_direction
+    if row_console <= spawn_row+row_rocet or row_rocet >= spawn_row+row_rocet:
+        spawn_row -= rows_direction
+
+    spawn_column += columns_direction
+    if column_console <= spawn_column+column_rocet or column_rocet >= spawn_column+column_rocet:
+        spawn_column -= columns_direction
+
+    return spawn_row, spawn_column
 
 
 def draw(canvas):
     canvas.border()
     canvas.nodelay(True)
     spawn_row = 18
-    spawn_column = 50
+    spawn_column = 40
     symbol_coroutines = get_symbol_coroutines(canvas)
     fire_coroutine = fire(canvas, spawn_row, spawn_column)
     rocet_frames = get_rocet_frames()
@@ -103,13 +126,12 @@ def draw(canvas):
         rocet_frame = next(iterator_rocet_frames)
         row_rocet, column_rocet = get_frame_size(rocet_frame)  # В цикле т.к фрейм может быть не одинаковыми по размеру с предыдущим.
 
-        spawn_row += rows_direction
-        if row_console <= spawn_row+row_rocet or 0+row_rocet >= spawn_row+row_rocet:
-            spawn_row -= rows_direction
-
-        spawn_column += columns_direction
-        if column_console <= spawn_column+column_rocet or 0+column_rocet >= spawn_column+column_rocet:
-            spawn_column -= columns_direction
+        spawn_row, spawn_column = rocket_spawn_coordinates(
+            spawn_row, spawn_column,
+            rows_direction, columns_direction,
+            row_rocet, column_rocet,
+            row_console, column_console
+            )
 
         draw_frame(canvas, spawn_row, spawn_column, rocet_frame)
         fire_coroutine.send(None)
@@ -124,6 +146,7 @@ def draw(canvas):
 
         draw_frame(canvas, spawn_row, spawn_column, rocet_frame, negative=True)
         time.sleep(TICk_TIMEOUT)
+
         if len(symbol_coroutines) == 0:
             break
 
