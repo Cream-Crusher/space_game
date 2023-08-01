@@ -92,7 +92,7 @@ def get_symbol_coroutines(canvas):
     return symbol_coroutines
 
 
-def rocket_spawn_coordinates(
+def get_rocket_spawn_coordinates(
         spawn_row, spawn_column,
         rows_direction, columns_direction,
         row_rocet, column_rocet,
@@ -125,7 +125,7 @@ def draw(canvas):
         rocet_frame = next(iterator_rocet_frames)
         row_rocet, column_rocet = get_frame_size(rocet_frame)  # В цикле т.к фрейм может быть не одинаковыми по размеру с предыдущим.
 
-        spawn_row, spawn_column = rocket_spawn_coordinates(
+        spawn_row, spawn_column = get_rocket_spawn_coordinates(
             spawn_row, spawn_column,
             rows_direction, columns_direction,
             row_rocet, column_rocet,
