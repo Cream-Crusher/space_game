@@ -17,5 +17,5 @@ python3 space_console.py
 ## notes
 
 ### console screen size
-* x: 80<=***
+* x: 80<=
 * y: 21<=
