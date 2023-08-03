@@ -61,15 +61,19 @@ async def symbol_blink(canvas, row, column, symbol, offset_tics):
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
         await asyncio.sleep(0)
+        # time.sleep(2)
 
         canvas.addstr(row, column, symbol)
         await asyncio.sleep(0)
+        #  time.sleep(0.3)
 
         canvas.addstr(row, column, symbol, curses.A_BOLD)
         await asyncio.sleep(0)
-
+        # time.sleep(0.5)
+        
         canvas.addstr(row, column, symbol)
         await asyncio.sleep(0)
+        # time.sleep(0.3)
 
 
 def get_symbol_coroutines(canvas):
@@ -128,12 +132,12 @@ def draw(canvas):
         draw_frame(canvas, spawn_row, spawn_column, rocet_frame)
         fire_coroutine.send(None)
 
-        for coroutine in symbol_coroutines:
+        for index, coroutine in enumerate(symbol_coroutines):
+
             try:
                 coroutine.send(None)
             except StopIteration:
-                symbol_coroutines.remove(coroutine)
-
+                symbol_coroutines.remove(symbol_coroutines[index])  # удаление по id не сдвигает id цикла(на +1) через enumerate
             canvas.refresh()
 
         draw_frame(canvas, spawn_row, spawn_column, rocet_frame, negative=True)
