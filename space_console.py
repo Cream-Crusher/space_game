@@ -54,10 +54,10 @@ async def asyncio_sleep_for_canvas(num):
         await asyncio.sleep(0)
 
 
-async def symbol_blink(canvas, row, column, symbol):
+async def symbol_blink(canvas, row, column, symbol, offset_tics):
     canvas.addstr(row, column, symbol, curses.A_DIM)
 
-    for num in range(random.randint(0, 5), 5):
+    for num in range(offset_tics):
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
         await asyncio.sleep(0)
@@ -87,7 +87,8 @@ def get_symbol_coroutines(canvas):
         column = random.randint(1, 80)
         row = random.randint(1, 21)
         symbol = random.choice('+*.:')
-        symbol_coroutines.append(symbol_blink(canvas, row, column, symbol))
+        offset_tics = random.randint(0, 5)
+        symbol_coroutines.append(symbol_blink(canvas, row, column, symbol, offset_tics))
 
     return symbol_coroutines
 
