@@ -133,12 +133,12 @@ def draw(canvas):
         fire_coroutine.send(None)
 
         for index, coroutine in enumerate(symbol_coroutines):
-
             try:
                 coroutine.send(None)
             except StopIteration:
                 symbol_coroutines.remove(symbol_coroutines[index])  # удаление по id не сдвигает id цикла(на +1) через enumerate
-            canvas.refresh()
+
+        canvas.refresh()
 
         draw_frame(canvas, spawn_row, spawn_column, rocet_frame, negative=True)
         time.sleep(TICk_TIMEOUT)
