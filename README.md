@@ -14,6 +14,15 @@ git clone https://github.com/Cream-Crusher/space_game.git
 python3 main.py
 ```
 
+## control
+
+The game works with ascii keyboard so please use only English layout without CAPS
+- `UP_KEY` - w
+- `DOWN_KEY` - s
+- `RIGHT_KEY` - d
+- `LEFT_KEY` - a
+- `SPACE_KEY` - in developing
+
 ### Constants
 
 Open file: constants.py
