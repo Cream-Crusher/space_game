@@ -11,11 +11,20 @@
 git clone https://github.com/Cream-Crusher/space_game.git
 
 # Run script
-python3 space_console.py
+python3 main.py
 ```
+
+### Constants
+
+Open file: constants.py
+
+Available variables:
+- `WINDOW_HEIGHT` — Playing field height
+- `WINDOW_WIDTH` — Playing field width
+
 
 ## notes
 
 ### console screen size
-* x: 80<=
-* y: 21<=
+* `WINDOW_HEIGHT`: 22<=
+* `WINDOW_WIDTH`: 81<=
