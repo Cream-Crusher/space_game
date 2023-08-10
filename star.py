@@ -12,7 +12,7 @@ class star:
         self.brightness = curses.A_DIM
 
     async def blink(self):
-        # Реализовал разницу появления через НЕцелые числа(от 1 до 2)
+        # Реализовал разницу появления через Не Целые числа(от 0 до 2)
         offset_tics = random.random() * 2
 
         await asyncio.sleep(offset_tics)
